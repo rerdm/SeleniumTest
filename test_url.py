@@ -2,6 +2,7 @@ import os
 import time
 import unittest
 
+import xmlrunner as xmlrunner
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
@@ -13,6 +14,7 @@ class TestUrl(TestCase):
     @classmethod
     def setUpClass(self):
         self.test_url = "https://www.google.de/"
+
 
     def test_open_Url_with_firefox(self):
 
@@ -38,14 +40,19 @@ class TestUrl(TestCase):
         driver = webdriver.Edge()
         driver.get(self.test_url)
         print(driver.title)
-        self.assertEqual(driver.current_url, "https://www.google.de/")
+        self.assertEqual(driver.current_url, "https://www.google.dee/")
         driver.close()
 
     def test_open_Url_with_ie(self):
         print("Test Internet Explorer")
         driver = webdriver.Edge()
         driver.maximize_window() #  To fix the Zoom issue
-        driver.get(self.test_url)
+
+        try:
+            driver.get(self.test_url)
+        except Exception as ex:
+            print("Exception : " + ex)
+
         print(driver.title)
         self.assertEqual(driver.current_url, "https://www.google.de/")
         driver.close()
