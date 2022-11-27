@@ -1,15 +1,17 @@
+import os
+import time
+import unittest
 
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options
 
-import unittest
 from unittest import TestCase
 
 class TestUrl(TestCase):
 
-    # Funktion will be opened one time before all test
+    # function will be opened one time before all test
     @classmethod
-    def setUp(self):
+    def setUpClass(self):
         self.test_url = "https://www.google.de/"
 
     def test_open_Url_with_firefox(self):
@@ -29,7 +31,7 @@ class TestUrl(TestCase):
         driver.get(self.test_url)
         print(driver.title)
         self.assertEqual(driver.current_url, "https://www.google.de/")
-
+        driver.close()
 
     def test_open_Url_with_edge(self):
         print("Test Edge")
@@ -37,6 +39,7 @@ class TestUrl(TestCase):
         driver.get(self.test_url)
         print(driver.title)
         self.assertEqual(driver.current_url, "https://www.google.de/")
+        driver.close()
 
     def test_open_Url_with_ie(self):
         print("Test Internet Explorer")
@@ -45,10 +48,12 @@ class TestUrl(TestCase):
         driver.get(self.test_url)
         print(driver.title)
         self.assertEqual(driver.current_url, "https://www.google.de/")
+        driver.close()
 
     @classmethod
     def tearDown(self):
         print("Tear down called after all tests")
 
-
-
+    # python coverage
+    # after running the test enter : coverage report -m
+    # python -m unittest main.TestUrl.test_open_Url_with_edge
