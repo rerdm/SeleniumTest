@@ -15,8 +15,8 @@ The purpose behind is to have a skeleton with several selenium functionality in 
 
 ### Executing program
 
-* This program will contain of programs woth the corresponding Test-Clases
-* The clases can be executed one by one or all in   
+* TBD
+* TBD
 
 
 
