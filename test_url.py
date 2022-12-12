@@ -61,6 +61,8 @@ class TestUrl(TestCase):
     def tearDown(self):
         print("Tear down called after all tests")
 
+if __name__ == '__main__':
+    unittest.main()
     # python coverage
     # after running the test enter : coverage report -m
     # python -m unittest main.TestUrl.test_open_Url_with_edge
