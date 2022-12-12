@@ -40,7 +40,7 @@ class TestUrl(TestCase):
         driver = webdriver.Edge()
         driver.get(self.test_url)
         print(driver.title)
-        self.assertEqual(driver.current_url, "https://www.google.dee/")
+        self.assertEqual(driver.current_url, "https://www.google.de/")
         driver.close()
 
     def test_open_Url_with_ie(self):
@@ -62,7 +62,14 @@ class TestUrl(TestCase):
         print("Tear down called after all tests")
 
 if __name__ == '__main__':
+
+    # You can also run all test ( test_XX ) in the current folder: Folder -> Run Python Test Selenium
+    # unittest.main will start the complete Testcase
     unittest.main()
+    # from terminal:
+    # python -m unittest  (run all test form the suite)
+    # python -m unittest tests.test_url.TestUrl.test_open_Url_with_chrom ( will start a specific tc from suite)
+
     # python coverage
     # after running the test enter : coverage report -m
     # python -m unittest main.TestUrl.test_open_Url_with_edge
