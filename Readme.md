@@ -12,6 +12,11 @@ The purpose behind is to have a skeleton with several selenium functionality in 
 * For Testing with Edge Browser you will need teh edge driver: https://developer.microsoft.com/en-us/microsoft-edge/tools/webdriver/#downloads
 * For Testing with Firefox Browser you will need the Firefox  driver: (geckodriver): https://github.com/mozilla/geckodriver/releases
 
+### Install Requirements
+* Import all needed dependencies: <br>
+  pip freeze > requirements.txt (save all available dependencies in txt file) <br>
+  pip install -r requirements.txt ( load all dependencies from txt file)
+  
 
 ### Executing program
 
