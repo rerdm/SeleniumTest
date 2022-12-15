@@ -5,6 +5,7 @@ import unittest
 
 import xmlrunner as xmlrunner
 from selenium import webdriver
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 
@@ -17,11 +18,11 @@ class TestUrl(TestCase):
 
     def setUp(self):
 
-        self.test_url = "https://seleniumkurs.codingsolo.de/"
-        self.website_url = "https://seleniumkurs.codingsolo.de/login?came_from=https%3A//seleniumkurs.codingsolo.de/"
+        self.test_url = "https://www.google.de/"
+
 
         # options: "chrom" , "edge" ,"firefox"
-        self.web_driver = "chrom"
+        self.web_driver = "firefox"
 
         if self.web_driver == "firefox":
             options = Options()
@@ -46,23 +47,21 @@ class TestUrl(TestCase):
         self.driver.get(self.test_url)
 
         # Select the input field by the ID selector
-        username = self.driver.find_element(By.ID, "__ac_name")
+        cockie_button = self.driver.find_element(By.XPATH, value="//*[@id='L2AGLb']")  # Xpath selector
         # Enter values in the input field
-        username.send_keys("User01")
+        cockie_button.click()
 
-        # Select the input field by the ID selector
-        password = self.driver.find_element(By.NAME, "__ac_password")
-        # Enter values in the input field
-        password.send_keys("WrongPassword")
+        # Select the search filed
+        select_search = self.driver.find_element(By.CSS_SELECTOR, value=".gLFyf") # class selector
+        # Add the data in the input field
+        select_search.send_keys("Mangia Mania Kronberg")
 
-        # Act
+        # Select the search filed
+        submit_search = self.driver.find_element(By.CSS_SELECTOR, value=".gLFyf")  # class selector
+        # submit the search by click the enter hot key
+        submit_search.send_keys(Keys.ENTER)
 
-        # Select the button by the CSS selector
-        login_button = self.driver.find_element(By.CSS_SELECTOR, "input[value=Anmelden")
-        # Click the button to submit
-        login_button.click()
-
-        time.sleep(10)
+        time.sleep(500)
 
         # Assert
 
