@@ -61,7 +61,15 @@ class TestUrl(TestCase):
         # submit the search by click the enter hot key
         submit_search.send_keys(Keys.ENTER)
 
-        time.sleep(500)
+        # Maximize the window
+        self.driver.maximize_window()
+
+        time.sleep(4)
+
+        # Scroll up the window element
+        self.driver.execute_script("window.scrollBy(0,1000)","")
+
+        #time.sleep(500)
 
         # Assert
 
