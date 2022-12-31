@@ -4,28 +4,27 @@ if __name__ == '__main__':
     waiting_time = 5
     waiting_time_extended = 500
 
-
     test_url_google = "https://www.google.com/"
     web_test_google = SeleniumClass(driver="firefox")
     web_test_google.open_website(test_url_google)
-    web_test_google.stop_test()
+    #web_test_google.stop_test()
 
     web_test_google.sleeep(waiting_time)
 
     #  Accept cookies from google
     web_test_google.submit_element(select_by_id="L2AGLb")
-    web_test_google.sleeep(waiting_time)
+    web_test_google.sleeep_5Secs()
 
     #  Enter input in google
     input_class = "gLFyf"  # id from input field
     input_value = "Heidi und paul"  #
 
     web_test_google.submit_element(select_by_class=input_class, value=input_value)
-    web_test_google.sleeep(waiting_time)
+    web_test_google.sleeep_5Secs()
 
     # Function will send return key one this element tu submit the page
     web_test_google.submit_window(input_class)
-    web_test_google.sleeep(waiting_time)
+    web_test_google.sleeep_5Secs()
 
     # This function will scroll the page till it will find the xpath by relative path
     xpath_element = "//h3[normalize-space()='Heidi und Paul Lieferservice']"
@@ -34,12 +33,12 @@ if __name__ == '__main__':
 
     # Submit the web element
     web_test_google.submit_element(select_by_xpath=xpath_element)
-    web_test_google.sleeep(waiting_time)
+    web_test_google.sleeep_5Secs()
 
     # Accept the cookies
     xpath_to_coockie = "CybotCookiebotDialogBodyButtonAccept"
     web_test_google.submit_element(select_by_id=xpath_to_coockie)
-    web_test_google.sleeep(waiting_time)
+    web_test_google.sleeep_5Secs()
 
     # Click in select filed to see all options
     # selector = "store-id"
@@ -63,13 +62,13 @@ if __name__ == '__main__':
     # Select delivery: take-away
     selector = "//div[@ng-show='ctrl.store.is_take_away_active']"
     web_test_google.submit_element(select_by_xpath="//div[@ng-show='ctrl.store.is_take_away_active']")
-    web_test_google.sleeep(waiting_time)
+    web_test_google.sleeep_5Secs()
 
     # Go to Menu
     web_test_google.submit_element(select_by_xpath="//button[normalize-space()='Zur Menü-Auswahl']")
     # Note: Class elements will be concationated with a dot (.) eg. class = "btn btn-primary btn-block" --> btn.btn-primary.btn-block
     # web_test_google.submit_element(select_by_css_selector=".btn.btn-primary.btn-block", value="61476")
-    web_test_google.sleeep(waiting_time)
+    web_test_google.sleeep_5Secs()
 
     # Select a Burger
     Available_burgers = {1: "Der Pure",
@@ -83,9 +82,9 @@ if __name__ == '__main__':
                          }
 
     web_test_google.get_elements(select_by_xpath="//*[@id='category-3']/div/div", element_text=Available_burgers[7])
-    web_test_google.sleeep(waiting_time)
+    web_test_google.sleeep_5Secs()
 
     web_test_google.submit_element(select_by_xpath="// span[normalize - space() = 'Weizenbrötchen']")
-    web_test_google.sleeep(waiting_time_extended)
+    web_test_google.sleeep_500Secs()
 
     web_test_google.driver_close()

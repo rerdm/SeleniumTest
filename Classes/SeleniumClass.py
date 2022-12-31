@@ -8,6 +8,7 @@ from selenium.common import WebDriverException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
+import logging
 
 from unittest import TestCase
 
@@ -47,6 +48,20 @@ class SeleniumClass:
 
         self.wait = WebDriverWait(self.driver, 5)
 
+        # Configuration of the logger
+        logging.basicConfig(
+            filename="program2.log",
+            level=logging.INFO,
+            style="{",
+            format="{asctime} [{levelname:8}] {message}",
+
+        )
+
+    def open_website(self, url):
+
+        self.driver.get(url)
+        self.driver.maximize_window()
+
     def set_cookies(self, token_value):
 
         if token_value:
@@ -56,13 +71,18 @@ class SeleniumClass:
     def get_cookies(self):
         print(self.driver.get_cookies())
 
-    def open_website(self, url):
+    def sleeep_5Secs(self):
+        """
+        This method is used to set a small waiting time from 5 seconds
+        """
+        time.sleep(5)
 
-        self.driver.get(url)
-        self.driver.maximize_window()
-
-    def sleeep(self, sleep_time):
-        time.sleep(sleep_time)
+    def sleeep_500Secs(self):
+        time.sleep(500)
+        """
+        This method is used to set a big waiting time from 500 seconds.
+        Can be used to analyze the web page while the program is running 
+        """
 
     def submit_shadow_element(self, iquery_path_to_element):
         """
@@ -86,12 +106,15 @@ class SeleniumClass:
         coockie = self.driver.execute_script(path_to_shadow_element)
         coockie.click()
 
-    def submit_element(self, select_by_xpath=0, select_by_class=0, select_by_id=0, select_by_link_text=0,
-                       select_by_css_selector=0, value=0):
+    def purpose_of_event(self, event_name):
+        print("Action")
+
+    def submit_element(self, select_by_xpath=0, select_by_class=0, select_by_id=0, select_by_link_text=0, select_by_css_selector=0, value=0):
 
         if bool(select_by_xpath):
 
             cookie_button = self.driver.find_element(By.XPATH, value=select_by_xpath)  # Xpath selector
+            logging.info("Element selected")
 
             if bool(value):
                 cookie_button.send_keys(value)
@@ -101,7 +124,7 @@ class SeleniumClass:
         if bool(select_by_link_text):
 
             cookie_button = self.driver.find_element(By.LINK_TEXT, value=select_by_link_text)
-            # Enter values in the input field
+            logging.info("Element selected")
 
             if bool(value):
                 cookie_button.send_keys(value)
@@ -109,16 +132,19 @@ class SeleniumClass:
                 cookie_button.click()
 
         if bool(select_by_class):
-            cookie_button = self.driver.find_element(By.CLASS_NAME, value=select_by_class)  # Xpath selector
 
-            # Enter values in the input field
+            cookie_button = self.driver.find_element(By.CLASS_NAME, value=select_by_class)  # Xpath selector
+            logging.info("Element selected")
+
             if bool(value):
                 cookie_button.send_keys(value)
             if not bool(value):
                 cookie_button.click()
 
         if bool(select_by_css_selector):
+
             cookie_button = self.driver.find_element(By.CSS_SELECTOR, value=select_by_css_selector)  # Xpath selector
+            logging.info("Element selected")
 
             if bool(value):
                 cookie_button.send_keys(value)
@@ -127,29 +153,30 @@ class SeleniumClass:
 
         if bool(select_by_id):
             cookie_button = self.driver.find_element(By.ID, value=select_by_id)  # Xpath selector
-            # Enter values in the input field
+            logging.info("Element selected")
+
             if bool(value):
                 cookie_button.send_keys(value)
             if not bool(value):
                 cookie_button.click()
 
     def submit_window(self, select_by_class):
+        """
+        This method is used to send the return key on a specific web element (simulates key press)
+        :param select_by_class: --> class from the web element
 
+        """
         submit_window = self.driver.find_element(By.CLASS_NAME, value=select_by_class)
         submit_window.send_keys(Keys.ENTER)
 
-        # Open the website
-        # Select the input field by the ID selector
-        # cookie_button = self.driver.find_element(By.XPATH, value=xpath)  # Xpath selector
-        # Enter values in the input field
-        # cookie_button.click()
-
-    def find_string_in_google_search_results(self, select_by_xpath):
-
-        # // h3[normalize - space() = 'Heidi und Paul - Eschborn - Speisekarte.de']
-
-        ele = self.driver.find_element(By.XPATH, value=select_by_xpath)
-        self.driver.execute_script("arguments[0].scrollIntoView();", ele)
+    def find_string_in_google_search_results(self, select_by_relative_xpath):
+        """
+        This method will scroll the actual page to the specific web element
+        :param select_by_relative_xpath: --> relative xpath of web element
+        :return:
+        """
+        web_element = self.driver.find_element(By.XPATH, value=select_by_relative_xpath)
+        self.driver.execute_script("arguments[0].scrollIntoView();", web_element)
 
     def scroll_page_to_specific_xpath(self, scroll_to_relative_xpath):
         """
@@ -162,7 +189,11 @@ class SeleniumClass:
         self.driver.execute_script("arguments[0].scrollIntoView();", scroll_to_element)
 
     def scroll_page_to_top(self):
-
+        """
+        This method can be used to scroll the actual page to the top. This method uses the
+        execute_script functionality:
+        Script:  window.scrollBy(0,0),""  --> window.scrollBy(x,y),""
+        """
         self.driver.execute_script("window.scrollBy(0,1000)", "")
 
     def set_select_option(self, id_of_element, select_element_text="", select_element_by_value=""):
@@ -231,6 +262,10 @@ class SeleniumClass:
                 print("\n")
 
         print(len(elements))
+
+    def stop_test(self):
+        self.driver.close()
+        sys.exit("Program stop - DEBUGGING ")
 
     def driver_close(self, error_string="0"):
         self.driver.close()
