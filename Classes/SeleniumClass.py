@@ -28,7 +28,6 @@ class SeleniumClass:
     """
 
     def __init__(self, driver):
-
         """
         The constructor method is used to initialize the driver
         :param driver: --> available options  chrom , firefox , edge
