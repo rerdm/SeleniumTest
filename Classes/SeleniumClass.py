@@ -49,11 +49,12 @@ class SeleniumClass:
 
         # Configuration of the logger
         logging.basicConfig(
-            filename="program2.log",
-            level=logging.INFO,
+
+            # filename="program2.log",  # -->  create logging file
+            level=logging.INFO,        # --> set the log level
             style="{",
             format="{asctime} [{levelname:8}] {message}",
-
+            #datefmt="%d.%m.%Y %H:%M:%S"
         )
 
     def open_website(self, url):
@@ -105,59 +106,72 @@ class SeleniumClass:
         coockie = self.driver.execute_script(path_to_shadow_element)
         coockie.click()
 
-    def purpose_of_event(self, event_name):
-        print("Action")
 
-    def submit_element(self, select_by_xpath=0, select_by_class=0, select_by_id=0, select_by_link_text=0, select_by_css_selector=0, value=0):
+    def submit_element(self, objective, select_by_xpath=0, select_by_class=0, select_by_id=0, select_by_link_text=0,
+                       select_by_css_selector=0, value=0):
 
         if bool(select_by_xpath):
 
             cookie_button = self.driver.find_element(By.XPATH, value=select_by_xpath)  # Xpath selector
-            logging.info("Element selected")
+            logging.info(objective+": Web-Element selected by xpath :"+select_by_xpath)
 
             if bool(value):
+                logging.info("Set input value: " + value + " in :" + objective)
                 cookie_button.send_keys(value)
+
             if not bool(value):
+                logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
 
         if bool(select_by_link_text):
 
             cookie_button = self.driver.find_element(By.LINK_TEXT, value=select_by_link_text)
-            logging.info("Element selected")
+            logging.info(objective+": Web-Element selected by link_text :"+select_by_link_text)
 
             if bool(value):
                 cookie_button.send_keys(value)
+                logging.info("Set input value: " + value + " in :" + objective)
             if not bool(value):
+                logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
+
 
         if bool(select_by_class):
 
             cookie_button = self.driver.find_element(By.CLASS_NAME, value=select_by_class)  # Xpath selector
-            logging.info("Element selected")
+            logging.info(objective+": Web-Element selected by class :"+select_by_class)
 
             if bool(value):
                 cookie_button.send_keys(value)
+                logging.info("Set input value: " + value + " in :" + objective)
             if not bool(value):
+                logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
 
         if bool(select_by_css_selector):
 
             cookie_button = self.driver.find_element(By.CSS_SELECTOR, value=select_by_css_selector)  # Xpath selector
-            logging.info("Element selected")
+            logging.info(objective+": Web-Element selected by css selector :"+select_by_css_selector)
 
             if bool(value):
                 cookie_button.send_keys(value)
+                logging.info("Set input value: " + value + " in :" + objective)
             if not bool(value):
+                logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
 
         if bool(select_by_id):
             cookie_button = self.driver.find_element(By.ID, value=select_by_id)  # Xpath selector
-            logging.info("Element selected")
+            logging.info(objective+": Web-Element selected by id :"+select_by_id)
 
             if bool(value):
+                logging.info("Set input value: " + value + " in :" + objective)
                 cookie_button.send_keys(value)
+
             if not bool(value):
+                logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
+
 
     def submit_window(self, select_by_class):
         """
@@ -255,7 +269,6 @@ class SeleniumClass:
         for element in elements:
 
             if element_text in element.text:
-
                 print(element.text)
                 element.click()
                 print("\n")
@@ -264,13 +277,14 @@ class SeleniumClass:
 
     def stop_test(self):
         self.driver.close()
-        sys.exit("Program stop - DEBUGGING ")
+        logging.info("Program stop")
+        sys.exit()
 
     def driver_close(self, error_string="0"):
         self.driver.close()
         if error_string and error_string != "0":
             print("\n")
-            sys.exit("\t Error : "+error_string)
+            sys.exit("\t Error : " + error_string)
         else:
             pass
 
@@ -325,19 +339,18 @@ if __name__ == '__main__':
         web_test_google.sleeep(waiting_time)
 
         # Click in select filed to see all options
-        #selector = "store-id"
-        #web_test_google.submit_element(select_by_id=selector)
-        #web_test_google.sleeep(waiting_time)
+        # selector = "store-id"
+        # web_test_google.submit_element(select_by_id=selector)
+        # web_test_google.sleeep(waiting_time)
 
         # Select a value from possible options - in case the option is not available the program will stop and
         # list the available options
         # web_test_google.set_select_option(select_element_by_value="3")
 
-        #web_test_google.set_select_option(id_of_element="store-id", select_element_text="Eschborn")
+        # web_test_google.set_select_option(id_of_element="store-id", select_element_text="Eschborn")
         web_test_google.submit_element(select_by_link_text="Kontakt")
 
         web_test_google.sleeep(waiting_time_extended)
-
 
         # Select delivery: Delivery
         # selector = "//div[@ng-show='ctrl.store.is_delivery_active']"
@@ -352,7 +365,7 @@ if __name__ == '__main__':
         # Go to Menu
         web_test_google.submit_element(select_by_xpath="//button[normalize-space()='Zur Menü-Auswahl']")
         # Note: Class elements will be concationated with a dot (.) eg. class = "btn btn-primary btn-block" --> btn.btn-primary.btn-block
-        #web_test_google.submit_element(select_by_css_selector=".btn.btn-primary.btn-block", value="61476")
+        # web_test_google.submit_element(select_by_css_selector=".btn.btn-primary.btn-block", value="61476")
         web_test_google.sleeep(waiting_time)
 
         # Select a Burger
@@ -368,7 +381,6 @@ if __name__ == '__main__':
 
         web_test_google.get_elements(select_by_xpath="//*[@id='category-3']/div/div", element_text=Available_burgers[7])
         web_test_google.sleeep(waiting_time)
-
 
         web_test_google.submit_element(select_by_xpath="// span[normalize - space() = 'Weizenbrötchen']")
         web_test_google.sleeep(waiting_time_extended)
@@ -402,7 +414,6 @@ if __name__ == '__main__':
         cookie_path_01_id = "CybotCookiebotDialogBodyButtonAccept"
 
         web_test_bahn.submit_element(select_by_id=cookie_path_01_id)
-
 
         # test.select_cookies(selected_by_id="consent-layer")
 
