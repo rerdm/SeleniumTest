@@ -17,10 +17,6 @@ from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 
-def sleep_x_secs():
-    time.sleep(300)
-
-
 class SeleniumClass:
     """
     The class contains all methods for testing a website via selenium
