@@ -103,16 +103,31 @@ class SeleniumClass:
         coockie.click()
 
 
+
+    def submit_element_by_rel_xpath_normalize_space(self, tag, search_string, objective):
+
+        #// a[normalize - space() = 'Reise']
+
+        rel_xpath = "//"+tag+"[normalize-space()='"+search_string+"']"
+        btn = self.driver.find_element(By.XPATH, rel_xpath)
+        logging.info(objective+": Web-Element selected by xpath: "+rel_xpath)
+        logging.info(objective + ": Web-Element clicked")
+        btn.click()
+
+    def submit_element_by_rel_xpath_contains(self):
+        #TODO create function
+        #$x("//h3[contains(text(),'CHECK24 im App Store')]")
+
     def submit_element(self, objective, select_by_xpath=0, select_by_class=0, select_by_id=0, select_by_link_text=0,
                        select_by_css_selector=0, value=0):
 
         if bool(select_by_xpath):
 
             cookie_button = self.driver.find_element(By.XPATH, value=select_by_xpath)  # Xpath selector
-            logging.info(objective+": Web-Element selected by xpath :"+select_by_xpath)
+            logging.info(objective+": Web-Element selected by xpath: "+select_by_xpath)
 
             if bool(value):
-                logging.info("Set input value: " + value + " in :" + objective)
+                logging.info(objective + ": Set input value: " + value)
                 cookie_button.send_keys(value)
 
             if not bool(value):
@@ -122,11 +137,11 @@ class SeleniumClass:
         if bool(select_by_link_text):
 
             cookie_button = self.driver.find_element(By.LINK_TEXT, value=select_by_link_text)
-            logging.info(objective+": Web-Element selected by link_text :"+select_by_link_text)
+            logging.info(objective+": Web-Element selected by link_text: "+select_by_link_text)
 
             if bool(value):
                 cookie_button.send_keys(value)
-                logging.info("Set input value: " + value + " in :" + objective)
+                logging.info(objective+": Set input value: " + value)
             if not bool(value):
                 logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
@@ -135,11 +150,11 @@ class SeleniumClass:
         if bool(select_by_class):
 
             cookie_button = self.driver.find_element(By.CLASS_NAME, value=select_by_class)  # Xpath selector
-            logging.info(objective+": Web-Element selected by class :"+select_by_class)
+            logging.info(objective+": Web-Element selected by class: "+select_by_class)
 
             if bool(value):
                 cookie_button.send_keys(value)
-                logging.info("Set input value: " + value + " in :" + objective)
+                logging.info(objective + ": Set input value: " + value)
             if not bool(value):
                 logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
@@ -147,21 +162,21 @@ class SeleniumClass:
         if bool(select_by_css_selector):
 
             cookie_button = self.driver.find_element(By.CSS_SELECTOR, value=select_by_css_selector)  # Xpath selector
-            logging.info(objective+": Web-Element selected by css selector :"+select_by_css_selector)
+            logging.info(objective+": Web-Element selected by css selector: "+select_by_css_selector)
 
             if bool(value):
                 cookie_button.send_keys(value)
-                logging.info("Set input value: " + value + " in :" + objective)
+                logging.info(objective + ": Set input value: " + value)
             if not bool(value):
                 logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
 
         if bool(select_by_id):
             cookie_button = self.driver.find_element(By.ID, value=select_by_id)  # Xpath selector
-            logging.info(objective+": Web-Element selected by id :"+select_by_id)
+            logging.info(objective+": Web-Element selected by id: "+select_by_id)
 
             if bool(value):
-                logging.info("Set input value: " + value + " in :" + objective)
+                logging.info(objective + ": Set input value: " + value)
                 cookie_button.send_keys(value)
 
             if not bool(value):
@@ -169,13 +184,14 @@ class SeleniumClass:
                 cookie_button.click()
 
 
-    def submit_window(self, select_by_class):
+    def submit_window(self, select_by_class, objective):
         """
         This method is used to send the return key on a specific web element (simulates key press)
         :param select_by_class: --> class from the web element
 
         """
         submit_window = self.driver.find_element(By.CLASS_NAME, value=select_by_class)
+        logging.info(objective+": Submit element by using with class: "+select_by_class)
         submit_window.send_keys(Keys.ENTER)
 
     def find_string_in_google_search_results(self, select_by_relative_xpath):
@@ -187,7 +203,7 @@ class SeleniumClass:
         web_element = self.driver.find_element(By.XPATH, value=select_by_relative_xpath)
         self.driver.execute_script("arguments[0].scrollIntoView();", web_element)
 
-    def scroll_page_to_specific_xpath(self, scroll_to_relative_xpath):
+    def scroll_page_to_specific_rel_xpath(self, scroll_to_relative_xpath):
         """
         This method will scroll to a specific web element on the webpage
         input parameter = xpath to specific web element ( recommended to use relative xpath )
