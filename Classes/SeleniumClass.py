@@ -28,6 +28,8 @@ class SeleniumClass:
         The constructor method is used to initialize the driver
         :param driver: --> available options  chrom , firefox , edge
         """
+        self.max_display_resolution_height = None
+        self.max_display_resolution_width = None
         self.web_driver = driver
 
         if self.web_driver == "firefox":
@@ -42,21 +44,75 @@ class SeleniumClass:
             self.driver = webdriver.Edge()
 
         self.wait = WebDriverWait(self.driver, 5)
+        self.size = ""
 
         # Configuration of the logger
         logging.basicConfig(
 
             # filename="program2.log",  # -->  create logging file
-            level=logging.INFO,        # --> set the log level
+            level=logging.INFO,  # --> set the log level
             style="{",
             format="{asctime} [{levelname:8}] {message}",
-            #datefmt="%d.%m.%Y %H:%M:%S"
+            # datefmt="%d.%m.%Y %H:%M:%S"
         )
 
     def open_website(self, url):
-
+        """
+        This method will open the website
+        :param url: --> website you want to open
+        """
         self.driver.get(url)
+        logging.info("Open website : " + url)
+
+    def maximize_window(self):
         self.driver.maximize_window()
+        logging.info("Maximize window to 100%")
+        self.driver.maximize_window()
+
+    def set_max_size_of_monitor(self):
+
+        self.avail_screen_height = self.driver.execute_script("return window.screen.availHeight")
+        self.avail_screen_width = self.driver.execute_script("return window.screen.availWidth")
+
+        logging.info(
+            "Maximal Display resolution check - MaxWidth: " + str(self.avail_screen_width) + " MayHeight :" + str(
+                self.avail_screen_height))
+
+    def get_window_size(self):
+
+        """
+        This method can be used to get the window size of teh actual running selenium window.
+        Mainly intended fot testing preparation purposes
+        """
+
+        self.size = self.driver.get_window_size()
+        logging.info("GET - Window size - width: " + str(self.size["width"]) + " height : " + str(self.size["height"]))
+
+        # self.max_display_resolution_width = int(self.size["width"])
+        # self.max_display_resolution_height = int(self.size["height"])
+
+    def set_window_size(self, width, height):
+        """
+        This method can be used to define a specific width and height for the current window.
+        To see the available.
+        Hint to see the available display resolution first check get_max_size_of_monitor()
+        :param width: width in pixel (int)
+        :param height: height in pixel (int)
+        :return:
+        """
+        self.driver.set_window_size(width=width, height=height)
+        logging.info("SET - Window size - width: " + str(height) + " height : " + str(height))
+
+    def set_window_size_to_x_percentage(self, percentage=20):
+
+        y_pixel = float((self.avail_screen_width / 100)) * percentage
+        x_pixel = float((self.avail_screen_height / 100)) * percentage
+
+        logging.info(
+            "SET- Window size to : " + str(percentage) + "% - Width in Px :" + str(y_pixel) + " Height in Px :" + str(
+                x_pixel))
+
+        self.driver.set_window_size(width=y_pixel, height=x_pixel)
 
     def set_cookies(self, token_value):
 
@@ -67,17 +123,13 @@ class SeleniumClass:
     def get_cookies(self):
         print(self.driver.get_cookies())
 
-    def sleeep_5Secs(self):
-        """
-        This method is used to set a small waiting time from 5 seconds
-        """
-        time.sleep(5)
+    def sleeep_XSecs(self, seconds):
 
-    def sleeep_500Secs(self):
-        time.sleep(500)
+        logging.info("Set sleeping time - " + str(seconds) + " Seconds")
+        time.sleep(seconds)
         """
-        This method is used to set a big waiting time from 500 seconds.
-        Can be used to analyze the web page while the program is running 
+        This method is used to set a user defined waiting 
+        and print this infomration in the logging stream 
         """
 
     def submit_shadow_element(self, iquery_path_to_element):
@@ -93,7 +145,7 @@ class SeleniumClass:
         4. Then you can use teh available methods (click..)
 
         :param iquery_path_to_element --> Generated iquery string
-        example( bahn website)
+        example(bahn website)
         "return document.querySelector('body > div:nth-child(1)').shadowRoot.querySelector('#consent-layer > div.consent-layer__btn-container > button.btn.btn--secondary.js-accept-all-cookies')"
         """
         path_to_shadow_element = iquery_path_to_element
@@ -102,29 +154,31 @@ class SeleniumClass:
         coockie = self.driver.execute_script(path_to_shadow_element)
         coockie.click()
 
-
-
     def submit_element_by_rel_xpath_normalize_space(self, tag, search_string, objective):
 
-        #// a[normalize - space() = 'Reise']
-
-        rel_xpath = "//"+tag+"[normalize-space()='"+search_string+"']"
+        # // a[normalize - space() = 'Reise']
+        rel_xpath = "//" + tag + "[normalize-space()='" + search_string + "'])"
         btn = self.driver.find_element(By.XPATH, rel_xpath)
-        logging.info(objective+": Web-Element selected by xpath: "+rel_xpath)
+        logging.info(objective + ": Web-Element selected by xpath and normalize-space function: " + rel_xpath)
         logging.info(objective + ": Web-Element clicked")
         btn.click()
 
-    def submit_element_by_rel_xpath_contains(self):
-        #TODO create function
-        #$x("//h3[contains(text(),'CHECK24 im App Store')]")
+    def submit_element_by_rel_xpath_contains(self, tag, search_string, objective):
+
+        # TODO create function
+        # "//h3[contains(text(),'CHECK24 im App Store')]"
+        rel_xpath = "//" + tag + "[contains(text(),'" + search_string + "')]"
+        logging.info(objective + ": Web-Element selected by xpath and contains function: " + rel_xpath)
+        logging.info(objective + ": Web-Element clicked")
+        self.driver.find_element(By.XPATH, rel_xpath).click()
 
     def submit_element(self, objective, select_by_xpath=0, select_by_class=0, select_by_id=0, select_by_link_text=0,
-                       select_by_css_selector=0, value=0):
+                       select_by_css_selector=0, value=0, get_text=False):
 
-        if bool(select_by_xpath):
+        if bool(select_by_xpath) and not bool(get_text):
 
             cookie_button = self.driver.find_element(By.XPATH, value=select_by_xpath)  # Xpath selector
-            logging.info(objective+": Web-Element selected by xpath: "+select_by_xpath)
+            logging.info(objective + ": Web-Element selected by xpath: " + select_by_xpath)
 
             if bool(value):
                 logging.info(objective + ": Set input value: " + value)
@@ -134,23 +188,22 @@ class SeleniumClass:
                 logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
 
-        if bool(select_by_link_text):
+        if bool(select_by_link_text) and not bool(get_text):
 
             cookie_button = self.driver.find_element(By.LINK_TEXT, value=select_by_link_text)
-            logging.info(objective+": Web-Element selected by link_text: "+select_by_link_text)
+            logging.info(objective + ": Web-Element selected by link_text: " + select_by_link_text)
 
             if bool(value):
                 cookie_button.send_keys(value)
-                logging.info(objective+": Set input value: " + value)
+                logging.info(objective + ": Set input value: " + value)
             if not bool(value):
                 logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
 
-
-        if bool(select_by_class):
+        if bool(select_by_class) and not bool(get_text):
 
             cookie_button = self.driver.find_element(By.CLASS_NAME, value=select_by_class)  # Xpath selector
-            logging.info(objective+": Web-Element selected by class: "+select_by_class)
+            logging.info(objective + ": Web-Element selected by class: " + select_by_class)
 
             if bool(value):
                 cookie_button.send_keys(value)
@@ -159,10 +212,10 @@ class SeleniumClass:
                 logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
 
-        if bool(select_by_css_selector):
+        if bool(select_by_css_selector) and not bool(get_text):
 
             cookie_button = self.driver.find_element(By.CSS_SELECTOR, value=select_by_css_selector)  # Xpath selector
-            logging.info(objective+": Web-Element selected by css selector: "+select_by_css_selector)
+            logging.info(objective + ": Web-Element selected by css selector: " + select_by_css_selector)
 
             if bool(value):
                 cookie_button.send_keys(value)
@@ -171,9 +224,9 @@ class SeleniumClass:
                 logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
 
-        if bool(select_by_id):
+        if bool(select_by_id) and not bool(get_text):
             cookie_button = self.driver.find_element(By.ID, value=select_by_id)  # Xpath selector
-            logging.info(objective+": Web-Element selected by id: "+select_by_id)
+            logging.info(objective + ": Web-Element selected by id: " + select_by_id)
 
             if bool(value):
                 logging.info(objective + ": Set input value: " + value)
@@ -183,15 +236,20 @@ class SeleniumClass:
                 logging.info(objective + ": Web-Element clicked")
                 cookie_button.click()
 
+        if bool(get_text):
+            element_text = ""
+
+            return element_text
 
     def submit_window(self, select_by_class, objective):
         """
         This method is used to send the return key on a specific web element (simulates key press)
         :param select_by_class: --> class from the web element
-
+        :param objective: This param is for debugging purpose the  step the
+        :return:
         """
         submit_window = self.driver.find_element(By.CLASS_NAME, value=select_by_class)
-        logging.info(objective+": Submit element by using with class: "+select_by_class)
+        logging.info(objective + ": Submit element by using with class: " + select_by_class)
         submit_window.send_keys(Keys.ENTER)
 
     def find_string_in_google_search_results(self, select_by_relative_xpath):
@@ -223,8 +281,8 @@ class SeleniumClass:
 
     def set_select_option(self, id_of_element, select_element_text="", select_element_by_value=""):
         """
-        This function
-        :param id_of_element: --> if of the web element (mandatory)
+        TBD
+        :param id_of_element: --> id of the web element (mandatory)
         :param select_element_text: --> this will select the item via the text
         :param select_element_by_value: --> this will select the item via the value
         :return:
@@ -244,13 +302,14 @@ class SeleniumClass:
                     element_found = True
                     value = self.available_select_element.get_attribute("value")
                     if value:
-                        print("Value of element:", value, ": Text of element", select_element_text)
+                        logging.info("Select element - value : " + value + ": Text of element :" + select_element_text)
 
                 if self.available_select_element.get_attribute("value") == select_element_by_value:
                     value_found = True
                     value = self.available_select_element.get_attribute("value")
                     if value:
-                        print("Value of element:", value, " ", self.available_select_element.text)
+                        logging.info(
+                            "Select element - value : " + value + " Text of element : " + self.available_select_element.text)
 
             if element_found or value_found and value:
 
@@ -259,13 +318,13 @@ class SeleniumClass:
 
             else:
 
-                error = "selected option not available"
-                print(error + "- see available options:")
+                error = "Selected option not available"
+                logging.error(error + "- see available options:")
                 for self.available_select_element in self.select_options:
                     available_value = self.available_select_element.get_attribute("value")
                     if available_value:
-                        print("Value of element:", available_value, ": Text of element :",
-                              self.available_select_element.text)
+                        logging.error("Value of element:" + available_value + ": Text of element :" +
+                                      self.available_select_element.text)
 
                 # Close the driver when web element is not available
                 self.driver_close(error_string=error)
@@ -274,18 +333,28 @@ class SeleniumClass:
             error = "Function only accepts - select_element_text or select_element_by_value not both (XOR)"
             self.driver_close(error_string=error)
 
-    def get_elements(self, select_by_xpath, element_text):
+    def submit_element_from_selection(self, select_by_xpath, element_text):
 
         elements = self.driver.find_elements(By.XPATH, select_by_xpath)
-
+        element_list = []
         for element in elements:
 
             if element_text in element.text:
-                print(element.text)
+                logging.info("Element found : " + element_text)
                 element.click()
-                print("\n")
 
-        print(len(elements))
+        return len(elements), element_list
+
+    def get_value_of_element_via_iquery(self, select_by_class=""):
+
+        combined_class = select_by_class.replace(" ", ".")
+        assembled_class = "." + combined_class
+        get_text_content_via_jquery = "return window.document.querySelector('" + assembled_class + "').textContent"
+
+        compare_text = self.driver.execute_script(get_text_content_via_jquery)
+        logging.info("GET - the value from html to compare with expected result - VALUE :"+compare_text)
+
+        return compare_text
 
     def stop_test(self):
         self.driver.close()
@@ -294,9 +363,11 @@ class SeleniumClass:
 
     def driver_close(self, error_string="0"):
         self.driver.close()
-        if error_string and error_string != "0":
-            print("\n")
-            sys.exit("\t Error : " + error_string)
-        else:
-            pass
 
+        if error_string and error_string != "0":
+
+            logging.error(error_string + " Program will close")
+            sys.exit()
+        else:
+            logging.info("Program stopped - Error Code:" + error_string)
+            sys.exit()
