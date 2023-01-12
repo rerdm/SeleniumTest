@@ -1,6 +1,7 @@
 import os
 import sys
 import time
+from datetime import datetime
 
 import xmlrunner as xmlrunner
 from selenium import webdriver
@@ -15,6 +16,8 @@ from unittest import TestCase
 from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
+
+from Classes.SaveLogingClass import SaveLogging
 
 
 class SeleniumClass:
@@ -46,15 +49,20 @@ class SeleniumClass:
         self.wait = WebDriverWait(self.driver, 5)
         self.size = ""
 
+        # if save_log:
         # Configuration of the logger
-        logging.basicConfig(
+        # logging.basicConfig(
+        #     #filename="program2.log",  # -->  create logging file
+        #     level=logging.INFO,  # --> set the log level
+        #     style="{",
+        #     format="{asctime} [{levelname:8}] {message}",
+        #     # datefmt="%d.%m.%Y %H:%M:%S"
+        # )
 
-            # filename="program2.log",  # -->  create logging file
-            level=logging.INFO,  # --> set the log level
-            style="{",
-            format="{asctime} [{levelname:8}] {message}",
-            # datefmt="%d.%m.%Y %H:%M:%S"
-        )
+        log = SaveLogging(logfilename="LoggingTest")
+        log.write_initial_line(line="line1")
+        log.append_lines(line="line2")
+
 
     def open_website(self, url):
         """
@@ -62,7 +70,8 @@ class SeleniumClass:
         :param url: --> website you want to open
         """
         self.driver.get(url)
-        logging.info("Open website : " + url)
+        logging_text = "Open website : " + url
+        #SaveLogging.append_lines(line=logging_text)
 
     def maximize_window(self):
         self.driver.maximize_window()
@@ -352,14 +361,14 @@ class SeleniumClass:
         get_text_content_via_jquery = "return window.document.querySelector('" + assembled_class + "').textContent"
 
         compare_text = self.driver.execute_script(get_text_content_via_jquery)
-        logging.info("GET - the value from html to compare with expected result - VALUE :"+compare_text)
+        logging.info("GET - the value from html to compare with expected result - VALUE :" + compare_text)
 
         return compare_text
 
     def stop_test(self):
         self.driver.close()
         logging.info("Program stop")
-        sys.exit()
+        # sys.exit()
 
     def driver_close(self, error_string="0"):
         self.driver.close()
