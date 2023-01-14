@@ -10,7 +10,7 @@ class TestOrderABruger(unittest.TestCase):
         self.driver = SeleniumClass(driver="firefox")
 
     def tearDown(self):
-        self.driver.stop_test()
+        pass
 
     def test_order_a_burger(self):
         ## Arrange
@@ -28,6 +28,10 @@ class TestOrderABruger(unittest.TestCase):
 
         # Function will send return key one this element tu submit the page
         self.driver.submit_window(input_class, objective="Submit element with Return Key")
+
+        text = self.driver.get_value_of_element_via_iquery(select_by_class="LC20lb MBeuO DKV0Md")
+        print(text)
+
 
 
 if __name__ == '__main__':

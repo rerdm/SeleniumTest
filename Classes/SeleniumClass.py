@@ -9,6 +9,7 @@ from selenium.common import WebDriverException
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.support import expected_conditions as EC
 import logging
 
 from unittest import TestCase
@@ -26,7 +27,7 @@ class SeleniumClass:
     Available options , parameters and return values can ve checked with help(SeleniumClass)
     """
 
-    def __init__(self, driver):
+    def __init__(self, driver, save_log=True):
         """
         The constructor method is used to initialize the driver
         :param driver: --> available options  chrom , firefox , edge
@@ -34,6 +35,7 @@ class SeleniumClass:
         self.max_display_resolution_height = None
         self.max_display_resolution_width = None
         self.web_driver = driver
+        self.save_log = save_log
 
         if self.web_driver == "firefox":
             options = Options()
@@ -49,19 +51,19 @@ class SeleniumClass:
         self.wait = WebDriverWait(self.driver, 5)
         self.size = ""
 
-        # if save_log:
-        # Configuration of the logger
-        # logging.basicConfig(
-        #     #filename="program2.log",  # -->  create logging file
-        #     level=logging.INFO,  # --> set the log level
-        #     style="{",
-        #     format="{asctime} [{levelname:8}] {message}",
-        #     # datefmt="%d.%m.%Y %H:%M:%S"
-        # )
+        if self.save_log:
+            self.log = SaveLogging(logfilename="LoggingTest")
+            dir_list = os.listdir()
+            for directory in dir_list:
+                if directory == "log":
+                    print("log folder is present")
+                else:
+                    log_folder_not_found = True
 
-        log = SaveLogging(logfilename="LoggingTest")
-        log.write_initial_line(line="line1")
-        log.append_lines(line="line2")
+        if log_folder_not_found:
+            print(" Logging folder not found --> create 'log' folder in current dir ")
+            print(" Logs will be saved in Classes folder")
+
 
 
     def open_website(self, url):
@@ -71,7 +73,9 @@ class SeleniumClass:
         """
         self.driver.get(url)
         logging_text = "Open website : " + url
-        #SaveLogging.append_lines(line=logging_text)
+        print(logging_text)
+        if self.save_log:
+            self.log.write_initial_line(line=logging_text)
 
     def maximize_window(self):
         self.driver.maximize_window()
@@ -359,16 +363,21 @@ class SeleniumClass:
         combined_class = select_by_class.replace(" ", ".")
         assembled_class = "." + combined_class
         get_text_content_via_jquery = "return window.document.querySelector('" + assembled_class + "').textContent"
-
+        time.sleep(5)
+        # TODO set driver wait function till script is loaded successfully
+        print(get_text_content_via_jquery)
         compare_text = self.driver.execute_script(get_text_content_via_jquery)
         logging.info("GET - the value from html to compare with expected result - VALUE :" + compare_text)
 
         return compare_text
 
+
     def stop_test(self):
         self.driver.close()
-        logging.info("Program stop")
-        # sys.exit()
+        self.log.move_to_logging_folder()
+
+        #logging.info("Program stop")
+        #sys.exit()
 
     def driver_close(self, error_string="0"):
         self.driver.close()
