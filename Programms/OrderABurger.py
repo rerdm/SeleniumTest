@@ -7,6 +7,7 @@ if __name__ == '__main__':
     test_url_google = "https://www.google.com/"
     web_test_google = SeleniumClass(driver="firefox")
     web_test_google.open_website(test_url_google)
+    # text comment to upload branch
 
     web_test_google.set_max_size_of_monitor()
     web_test_google.set_window_size_to_x_percentage(percentage=100)
