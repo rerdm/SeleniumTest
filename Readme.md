@@ -1,6 +1,6 @@
 # SeleniumTest
 
-This Project is a self project to build up generic selenium program. 
+In this project is a build up basic selenium program. 
 The purpose behind is to have a skeleton with several selenium functionality in one place. 
 
 
@@ -17,12 +17,6 @@ The purpose behind is to have a skeleton with several selenium functionality in 
   pip freeze > requirements.txt (save all available dependencies in txt file) <br>
   pip install -r requirements.txt ( load all dependencies from txt file)
   
-
-### Executing program
-
-* TBD
-* TBD
-
 
 
 
